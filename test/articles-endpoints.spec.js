@@ -3,7 +3,7 @@ const knex = require('knex')
 const app = require('../src/app')
 const {makeArticlesArray} = require('./articles.fixtures')
 
-describe.only('Articles Endpoints', function() {
+describe('Articles Endpoints', function() {
     let db;
     
     before('make knex instance', () => {
@@ -47,7 +47,7 @@ describe.only('Articles Endpoints', function() {
                 const articleId = 123456
                 return supertest(app)
                 .get(`/articles/${articleId}`)
-                .expect(404, {error: {message: `Article doesn't exist`}})
+                .expect(404, {error: {message: `Article does not exist`}})
             })
         })
         context('Given there are articles in the database', () => {
@@ -95,6 +95,23 @@ describe.only('Articles Endpoints', function() {
                 .get(`/articles/${postRes.body.id}`)
                 .expect(postRes.body)
                 )
+        })
+        const requiredFields = ['title', 'style', 'content']
+        requiredFields.forEach(field => {
+            const newArticle = {
+                title: 'Test new article',                 
+                style: 'Listicle',
+                content: 'Test new article content...'
+            }
+            it(`responds with 400 and an error message when the ${field} is missing`, () => {
+                delete newArticle[field]
+                return supertest(app)
+                .post('/articles')
+                .send(newArticle)
+                .expect(400, {
+                    error: {message: `Missing '${field}' in request body`}
+                })
+            })
         })
     })
 })
