@@ -8,18 +8,14 @@ const articlesRouter = require('./articles/articles-router')
 
 const app = express()
 
-const morganOption = (NODE_ENV === 'production') ? 'tiny' : 'common';
-
-app.use(morgan(morganOption))
+app.use(morgan((NODE_ENV === 'production') ? 'tiny' : 'common', {
+    skip: () => NODE_ENV === 'test'
+}))
 app.use(helmet())
 app.use(cors())
 
 app.use('/articles', articlesRouter)
 
-app.get('/xss', (req, res) => {
-    res.cookie('secretToken', '1234567890');
-    res.sendFile(__dirname + '/xss-example.html');
-})
 
 app.get('/', (req, res) => {
     res.send('Hello, world!')
