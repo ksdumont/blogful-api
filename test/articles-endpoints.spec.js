@@ -13,13 +13,13 @@ describe('Articles Endpoints', function() {
         })
         app.set('db', db)
     })
-    // after('disconnect from db', () => db.destroy())
+    after('disconnect from db', () => db.destroy())
 
     before('clean the table', () => db('blogful_articles').truncate())
 
     afterEach('cleanup', () => db('blogful_articles').truncate())
 
-    describe.only(`GET /articles`, () => {
+    describe(`GET /articles`, () => {
         context('Given no articles', () => {
             it('responds with 200 and an empty list', () => {
                 return supertest(app)
