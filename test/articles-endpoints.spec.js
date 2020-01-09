@@ -87,7 +87,7 @@ describe('Articles Endpoints', function() {
         context(`Given an XSS attack article`, () => {
             const {maliciousArticle, expectedArticle} = makeMaliciousArticle()
 
-            this.beforeEach('insert malicious article', () => {
+            beforeEach('insert malicious article', () => {
                 return db
                 .into('blogful_articles')
                 .insert([maliciousArticle])
